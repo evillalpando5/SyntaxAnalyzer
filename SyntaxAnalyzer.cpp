@@ -54,7 +54,29 @@ int SyntaxAnalyzer::stmt(vector<string>& tok, vector<string>& lex, vector<string
 // mark
 bool SyntaxAnalyzer::ifstmt(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr){}
 // erika
-bool SyntaxAnalyzer::elsepart(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr){}
+bool SyntaxAnalyzer::elsepart(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr) {
+    if (tokitr != tok.end()) {
+        if (*tokitr != "t_else") {
+            tokitr++; lexitr++;
+            return true;
+        }
+        if (*tokitr == "t_else") {
+            tokitr++; lexitr++;
+            if (tokitr != tok.end() && *tokitr == "s_lbrace"){
+                tokitr++; lexitr++;
+                if (stmtlist(tok, lex, tokitr, lexitr)) {
+                    if(tokitr != tok.end() && *tokitr == "s_rbrace" ) {
+                    return true;
+                }
+                return false;
+                }
+            }
+            return false;
+        }
+    }
+    tokitr++; lexitr++;
+    return false;
+}
 // evan
 bool SyntaxAnalyzer::whilestmt(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr) {
     cout << "INSIDE WHILE" << endl;
@@ -104,7 +126,22 @@ bool SyntaxAnalyzer::assignstmt(vector<string>& tok, vector<string>& lex, vector
 }
 //erika
 bool SyntaxAnalyzer::inputstmt(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr) {
-
+    if (tokitr != tok.end()) {
+        if (*tokitr == "t_input") {
+            tokitr++; lexitr++;
+            if (*tokitr == "s_rparen") {
+                tokitr++; lexitr++;
+                if (*tokitr == "t_id") {
+                    tokitr++; lexitr++;
+                    if (*tokitr == "s_rparen") {
+                        tokitr++; lexitr++;
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    return false;
 }
 // mark
 bool SyntaxAnalyzer::outputstmt(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr){}
@@ -142,7 +179,8 @@ bool SyntaxAnalyzer::term(vector<string>& tok, vector<string>& lex, vector<strin
     }
     return false;
 }
-bool SyntaxAnalyzer::logicop(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr){}// mark
+//mark
+bool SyntaxAnalyzer::logicop(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr){}
 
 // evan
 bool SyntaxAnalyzer::arithop(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr){
@@ -173,6 +211,7 @@ bool SyntaxAnalyzer::relop(vector<string>& tok, vector<string>& lex, vector<stri
 //	valid scanner/lexical analyzer output.  This data must be in the form: token : lexeme
 // post: the vectors have been populated
 SyntaxAnalyzer::SyntaxAnalyzer(istream& infile) {
+
 
 }
 
