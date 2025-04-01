@@ -5,8 +5,10 @@
 // VDEC   var  VARS  [VARS]m | Ө
 bool SyntaxAnalyzer::vdec(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr) {
     if (tokitr != tok.end()) {
+        // if they didnt choose to delcare variables it returns true
         if (*tokitr != "t_var") {
             return true;
+
         }
         while ( *tokitr == "t_var"){
             tokitr++; lexitr++;
@@ -25,6 +27,7 @@ int SyntaxAnalyzer::vars(vector<string>& tok, vector<string>& lex, vector<string
         if(*tokitr == "t_string" ||*tokitr == "t_integer") {
             tokitr++; lexitr++;
             if (tokitr != tok.end() && *tokitr == "t_id") {
+
                 tokitr++; lexitr++;
                 while (tokitr != tok.end() && *tokitr == "s_comma") {
                     tokitr++; lexitr++;
@@ -46,6 +49,9 @@ int SyntaxAnalyzer::vars(vector<string>& tok, vector<string>& lex, vector<string
 // erika
 bool SyntaxAnalyzer::stmtlist(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr) {
     if (tokitr != tok.end()) {
+        if (!stmt(tok, lex, tokitr, lexitr)) {
+            return true;
+        }
         while (stmt(tok, lex, tokitr, lexitr)) {
             cout << "syntax checking [stmt]" << endl;
         }
@@ -55,7 +61,7 @@ bool SyntaxAnalyzer::stmtlist(vector<string>& tok, vector<string>& lex, vector<s
 }
 // mark
 int SyntaxAnalyzer::stmt(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr) {
-    if (ifstmt(tok,lex, tokitr,lexitr)){return 1;}
+    if (ifstmt(tok,lex, tokitr,lexitr)) {return 1;}
     else if (whilestmt(tok,lex, tokitr,lexitr)){return 1;}
     else if (assignstmt(tok,lex, tokitr,lexitr)){return 1;}
     else if (inputstmt(tok,lex, tokitr,lexitr)){return 1;}
@@ -298,5 +304,8 @@ SyntaxAnalyzer::SyntaxAnalyzer(istream& infile) {
 // that caused the error.
 // If no error, vectors contain syntactically correct source code
 bool SyntaxAnalyzer::parse() {
+if (vdec()) {
+    if ("t_main")
+}
 
 }
