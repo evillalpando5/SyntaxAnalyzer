@@ -255,7 +255,7 @@ bool SyntaxAnalyzer::logicop(vector<string>& tok, vector<string>& lex, vector<st
 bool SyntaxAnalyzer::arithop(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr){
     cout << "INSIDE ARITH" << endl;
     if (tokitr != tok.end()) {
-        if (*tokitr == "s_compare" || *tokitr == "s_nequal" ||  *tokitr == "s_greater" ||  *tokitr == "s_less") {
+        if (*tokitr == "s_plus" || *tokitr == "s_minus" ||  *tokitr == "s_div") {
             return true;
         }
     } else
