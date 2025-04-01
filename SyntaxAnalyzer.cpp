@@ -31,16 +31,16 @@ int SyntaxAnalyzer::vars(vector<string>& tok, vector<string>& lex, vector<string
                     if (tokitr != tok.end() && *tokitr == "t_id") {
                         tokitr++; lexitr++;
                     } else {
-                        return false;
+                        return 0;
                     }
                 }
                 if (tokitr != tok.end() && *tokitr == "s_semi") {
-                    return true;
+                    return 1;
                 }
             }
         }
     }
-    return false;
+    return 0;
 }
 
 // erika
@@ -55,12 +55,12 @@ bool SyntaxAnalyzer::stmtlist(vector<string>& tok, vector<string>& lex, vector<s
 }
 // mark
 int SyntaxAnalyzer::stmt(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr) {
-    if (ifstmt(tok,lex, tokitr,lexitr)){return true;}
-    else if (whilestmt(tok,lex, tokitr,lexitr)){return true;}
-    else if (assignstmt(tok,lex, tokitr,lexitr)){return true;}
-    else if (inputstmt(tok,lex, tokitr,lexitr)){return true;}
-    else if (outputstmt(tok,lex, tokitr,lexitr)){return true;}
-    else {return false;}
+    if (ifstmt(tok,lex, tokitr,lexitr)){return 1;}
+    else if (whilestmt(tok,lex, tokitr,lexitr)){return 1;}
+    else if (assignstmt(tok,lex, tokitr,lexitr)){return 1;}
+    else if (inputstmt(tok,lex, tokitr,lexitr)){return 1;}
+    else if (outputstmt(tok,lex, tokitr,lexitr)){return 1;}
+    else {return 0;}
 }
 // mark
 bool SyntaxAnalyzer::ifstmt(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr) {
@@ -280,7 +280,15 @@ bool SyntaxAnalyzer::relop(vector<string>& tok, vector<string>& lex, vector<stri
 //	valid scanner/lexical analyzer output.  This data must be in the form: token : lexeme
 // post: the vectors have been populated
 SyntaxAnalyzer::SyntaxAnalyzer(istream& infile) {
-
+    string line;
+    getline(infile, line);
+    while(!infile.eof()){
+        // find the first space and split it
+        int pos = line.find(" ");
+        tokens.push_back(line.substr(0,pos));
+        lexemes.push_back(line.substr(pos+1, line.length()));
+        getline(infile, line);
+    }
 
 }
 
