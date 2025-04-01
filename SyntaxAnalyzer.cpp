@@ -61,12 +61,13 @@ bool SyntaxAnalyzer::stmtlist(vector<string>& tok, vector<string>& lex, vector<s
 }
 // mark
 int SyntaxAnalyzer::stmt(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr) {
-    if (ifstmt(tok,lex, tokitr,lexitr)) {return 1;}
-    else if (whilestmt(tok,lex, tokitr,lexitr)){return 1;}
-    else if (assignstmt(tok,lex, tokitr,lexitr)){return 1;}
-    else if (inputstmt(tok,lex, tokitr,lexitr)){return 1;}
-    else if (outputstmt(tok,lex, tokitr,lexitr)){return 1;}
+    if (ifstmt(tok,lex, tokitr,lexitr)){tokitr++;lexitr++;return 1;}
+    else if (whilestmt(tok,lex, tokitr,lexitr)){tokitr++;lexitr++;return 1;}
+    else if (assignstmt(tok,lex, tokitr,lexitr)){tokitr++;lexitr++;return 1;}
+    else if (inputstmt(tok,lex, tokitr,lexitr)){tokitr++;lexitr++;return 1;}
+    else if (outputstmt(tok,lex, tokitr,lexitr)){tokitr++;lexitr++;return 1;}
     else {return 0;}
+
 }
 // mark
 bool SyntaxAnalyzer::ifstmt(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr) {
@@ -100,6 +101,7 @@ bool SyntaxAnalyzer::ifstmt(vector<string>& tok, vector<string>& lex, vector<str
 bool SyntaxAnalyzer::elsepart(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr) {
     if (tokitr != tok.end()) {
         if (*tokitr != "t_else") {
+            tokitr++; lexitr++;
             return true;
         }
         if (*tokitr == "t_else") {
@@ -118,8 +120,8 @@ bool SyntaxAnalyzer::elsepart(vector<string>& tok, vector<string>& lex, vector<s
             return false;
         }
     }
-    return false;
 }
+
 // evan
 bool SyntaxAnalyzer::whilestmt(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr) {
     cout << "INSIDE WHILE" << endl;
@@ -155,7 +157,7 @@ bool SyntaxAnalyzer::whilestmt(vector<string>& tok, vector<string>& lex, vector<
 bool SyntaxAnalyzer::assignstmt(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr) {
     cout << "INSIDE ASSIGN" << endl;
     if (tokitr != tok.end()) {
-        if (*tokitr == "t_id" && symboltable.contains(*lexitr)) {
+        if (*tokitr == "t_id") {
             tokitr++; lexitr++;
             if (tokitr != tok.end() && *tokitr == "s_assign") {
                 tokitr++; lexitr++;
@@ -174,7 +176,7 @@ bool SyntaxAnalyzer::inputstmt(vector<string>& tok, vector<string>& lex, vector<
             tokitr++; lexitr++;
             if (*tokitr == "s_rparen") {
                 tokitr++; lexitr++;
-                if (*tokitr == "t_id" && symboltable.contains(*lexitr)) {
+                if (*tokitr == "t_id") {
                     tokitr++; lexitr++;
                     if (*tokitr == "s_rparen") {
                         tokitr++; lexitr++;
@@ -196,6 +198,7 @@ bool SyntaxAnalyzer::outputstmt(vector<string>& tok, vector<string>& lex, vector
                 if (tokitr != tok.end()) {
                     //check both cases (EXPR) or (text)
                     if (expr(tok,lex, tokitr, lexitr) || *tokitr == "t_text") {
+                        tokitr++;lexitr++;
                         if (tokitr != tok.end()) {
                             if (*tokitr == "s_rparen") {
                                 //Iterate???
@@ -303,8 +306,5 @@ SyntaxAnalyzer::SyntaxAnalyzer(istream& infile) {
 // that caused the error.
 // If no error, vectors contain syntactically correct source code
 bool SyntaxAnalyzer::parse() {
-if (vdec()) {
-    if ("t_main")
-}
 
 }
