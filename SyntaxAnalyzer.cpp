@@ -5,7 +5,7 @@
 // VDEC   var  VARS  [VARS]m | Ө
 bool SyntaxAnalyzer::vdec(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr) {
     if (tokitr != tok.end()) {
-        if (*tokitr == "t_var") {
+        if (*tokitr != "t_var") {
             return true;
         }
         while ( *tokitr == "t_var"){
