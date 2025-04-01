@@ -55,12 +55,13 @@ bool SyntaxAnalyzer::stmtlist(vector<string>& tok, vector<string>& lex, vector<s
 }
 // mark
 int SyntaxAnalyzer::stmt(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr) {
-    if (ifstmt(tok,lex, tokitr,lexitr)){return 1;}
-    else if (whilestmt(tok,lex, tokitr,lexitr)){return 1;}
-    else if (assignstmt(tok,lex, tokitr,lexitr)){return 1;}
-    else if (inputstmt(tok,lex, tokitr,lexitr)){return 1;}
-    else if (outputstmt(tok,lex, tokitr,lexitr)){return 1;}
+    if (ifstmt(tok,lex, tokitr,lexitr)){tokitr++;lexitr++;return 1;}
+    else if (whilestmt(tok,lex, tokitr,lexitr)){tokitr++;lexitr++;return 1;}
+    else if (assignstmt(tok,lex, tokitr,lexitr)){tokitr++;lexitr++;return 1;}
+    else if (inputstmt(tok,lex, tokitr,lexitr)){tokitr++;lexitr++;return 1;}
+    else if (outputstmt(tok,lex, tokitr,lexitr)){tokitr++;lexitr++;return 1;}
     else {return 0;}
+
 }
 // mark
 bool SyntaxAnalyzer::ifstmt(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr) {
