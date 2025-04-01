@@ -71,7 +71,6 @@ bool SyntaxAnalyzer::ifstmt(vector<string>& tok, vector<string>& lex, vector<str
             if (tokitr != tok.end() && *tokitr != "s_lparen") {
                 tokitr++;lexitr++;
                 if (expr(tok,lex, tokitr, lexitr)) {
-                    tokitr++;lexitr++;
                     if (tokitr != tok.end() && *tokitr != "s_rparen") {
                         tokitr++;lexitr++;
                         if (tokitr != tok.end() && *tokitr != "s_lbrace") {
@@ -104,34 +103,30 @@ bool SyntaxAnalyzer::elsepart(vector<string>& tok, vector<string>& lex, vector<s
                 tokitr++; lexitr++;
                 if (stmtlist(tok, lex, tokitr, lexitr)) {
                     if(tokitr != tok.end() && *tokitr == "s_rbrace" ) {
+                        tokitr++;lexitr++;
                     return true;
                 }
-                return false;
                 }
             }
-            return false;
         }
     }
-    tokitr++; lexitr++;
     return false;
 }
 // evan
 bool SyntaxAnalyzer::whilestmt(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr) {
     cout << "INSIDE WHILE" << endl;
     if (tokitr != tok.end()) {
-        if (tokitr != tok.end() && *tokitr == "t_while") {
+        if (*tokitr == "t_while") {
             tokitr++; lexitr++;
             if (tokitr != tok.end() && *tokitr == "s_lparen") {
                 tokitr++; lexitr++;
                 if (tokitr != tok.end()) {
                     if (expr(tok, lex, tokitr, lexitr)) {
-                        tokitr++; lexitr++;
                         if (tokitr != tok.end() && *tokitr == "s_rparen") {
                             tokitr++; lexitr++;
                             if (tokitr != tok.end() && *tokitr == "s_lbrace") {
                                 tokitr++; lexitr++;
                                 if (stmtlist(tok,lex, tokitr, lexitr)) {
-                                    tokitr++; lexitr++;
                                     if (tokitr != tok.end() && *tokitr == "s_rbrace") {
                                         return true;
                                     }
@@ -142,15 +137,15 @@ bool SyntaxAnalyzer::whilestmt(vector<string>& tok, vector<string>& lex, vector<
 
                 }
             }
-        } else
-            return false;
+        }
     }
+    return false;
 }
 // evan
 bool SyntaxAnalyzer::assignstmt(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr) {
     cout << "INSIDE ASSIGN" << endl;
     if (tokitr != tok.end()) {
-        if (*tokitr == "t_id") {
+        if (*tokitr == "t_id" && symboltable.contains(*lexitr)) {
             tokitr++; lexitr++;
             if (tokitr != tok.end() && *tokitr == "s_assign") {
                 tokitr++; lexitr++;
@@ -159,7 +154,7 @@ bool SyntaxAnalyzer::assignstmt(vector<string>& tok, vector<string>& lex, vector
                 }
             }
         }
-    } else
+    }
         return false;
 }
 //erika
@@ -169,7 +164,7 @@ bool SyntaxAnalyzer::inputstmt(vector<string>& tok, vector<string>& lex, vector<
             tokitr++; lexitr++;
             if (*tokitr == "s_rparen") {
                 tokitr++; lexitr++;
-                if (*tokitr == "t_id") {
+                if (*tokitr == "t_id" && symboltable.contains(*lexitr)) {
                     tokitr++; lexitr++;
                     if (*tokitr == "s_rparen") {
                         tokitr++; lexitr++;
@@ -191,10 +186,8 @@ bool SyntaxAnalyzer::outputstmt(vector<string>& tok, vector<string>& lex, vector
                 if (tokitr != tok.end()) {
                     //check both cases (EXPR) or (text)
                     if (expr(tok,lex, tokitr, lexitr) || *tokitr == "t_text") {
-                        tokitr++;lexitr++;
                         if (tokitr != tok.end()) {
                             if (*tokitr == "s_rparen") {
-                                //Iterate???
                                 tokitr++;lexitr++;
                                 return true;
                             }
@@ -224,7 +217,28 @@ bool SyntaxAnalyzer::expr(vector<string>& tok, vector<string>& lex, vector<strin
         return false;
 
 } // evan
-bool SyntaxAnalyzer::simpleexpr(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr){}  // mark
+bool SyntaxAnalyzer::simpleexpr(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr) {
+    if (tokitr != tok.end()) {
+        if (term(tok, lex, tokitr,lexitr)) {
+            //will term iterate it or should I
+            if (arithop(tok,lex, tokitr,lexitr)) {
+                //case 1 term arith term
+                if (term(tok,lex, tokitr,lexitr)) {
+                    return true;
+                }
+            }
+            else if (relop(tok,lex, tokitr,lexitr)) {
+                //case 2 term relop term
+                if (term(tok, lex, tokitr,lexitr)) {
+                    return true;
+                }
+            }
+            //if its just a term
+            return true;
+        }
+        return false;
+    }
+}  // mark
 
 //  erika
 // TERM    number | text |  id  | (EXPR)
