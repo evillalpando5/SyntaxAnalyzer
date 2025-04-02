@@ -263,7 +263,7 @@ bool SyntaxAnalyzer::logicop(vector<string>& tok, vector<string>& lex, vector<st
 bool SyntaxAnalyzer::arithop(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr){
     cout << "INSIDE ARITH" << endl;
     if (tokitr != tok.end()) {
-        if (*tokitr == "s_compare" || *tokitr == "s_nequal" ||  *tokitr == "s_greater" ||  *tokitr == "s_less") {
+        if (*tokitr == "s_plus" || *tokitr == "s_minus" ||  *tokitr == "s_div") {
             return true;
         }
     } else
@@ -306,5 +306,22 @@ SyntaxAnalyzer::SyntaxAnalyzer(istream& infile) {
 // that caused the error.
 // If no error, vectors contain syntactically correct source code
 bool SyntaxAnalyzer::parse() {
-
+    if (tokitr != tok.end()) {
+        if(vdec(tok, lex, tokitr, lexitr)){
+            if (tokitr != tok.end() && *tokitr == "t_main"){
+                tokitr++; lexitr++;
+                if(tokitr != tok.end() && *tokitr == "s_lbrace"){
+                        tokitr++; lexitr++;
+                        if(stmtlist(tok, lex, tokitr, lexitr)){
+                            if(tokitr != tok.end() && *tokitr == "s_rbrace"){
+                                return true;
+                        }
+                    }
+                }
+            }
+        }
+    } else{
+        cout << "Error reading file at:" << *tokitr << endl;
+        return false;
+    }
 }
