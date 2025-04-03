@@ -176,7 +176,7 @@ bool SyntaxAnalyzer::inputstmt(vector<string>& tok, vector<string>& lex, vector<
             tokitr++; lexitr++;
             if (*tokitr == "s_rparen") {
                 tokitr++; lexitr++;
-                if (*tokitr == "t_id") {
+                if (*tokitr == "t_id" && tokenmap.contains(*lexitr)) {
                     tokitr++; lexitr++;
                     if (*tokitr == "s_rparen") {
                         tokitr++; lexitr++;
@@ -272,7 +272,7 @@ bool SyntaxAnalyzer::term(vector<string>& tok, vector<string>& lex, vector<strin
 //mark
 bool SyntaxAnalyzer::logicop(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr) {
     if (tokitr != tok.end()) {
-        if (*tokitr == "and" || *tokitr == "or") {
+        if (*tokitr == "t_and" || *tokitr == "t_or") {
             //Should I iterate or should it be assumed before the next call its iterated
             tokitr++;lexitr++;
             return true;
