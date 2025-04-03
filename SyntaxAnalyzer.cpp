@@ -1,5 +1,6 @@
 #include "SyntaxAnalyzer.h"
 #include <istream>
+#include <unordered_set>
 
 // erika
 // VDEC   var  VARS  [VARS]m | Ө
@@ -61,12 +62,17 @@ bool SyntaxAnalyzer::stmtlist(vector<string>& tok, vector<string>& lex, vector<s
 }
 // mark
 int SyntaxAnalyzer::stmt(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr) {
-    if (ifstmt(tok,lex, tokitr,lexitr)){tokitr++;lexitr++;return 1;}
-    else if (whilestmt(tok,lex, tokitr,lexitr)){tokitr++;lexitr++;return 1;}
-    else if (assignstmt(tok,lex, tokitr,lexitr)){tokitr++;lexitr++;return 1;}
-    else if (inputstmt(tok,lex, tokitr,lexitr)){tokitr++;lexitr++;return 1;}
-    else if (outputstmt(tok,lex, tokitr,lexitr)){tokitr++;lexitr++;return 1;}
-    else {return 0;}
+    unordered_set<string> statTokens = {"t_if","t_while", "t_assign", "t_input", "t_output"};
+    if (tokitr != tok.end() && statTokens.contains(*tokitr)) {
+        if (ifstmt(tok,lex, tokitr,lexitr)){tokitr++;lexitr++;return 1;}
+        else if (whilestmt(tok,lex, tokitr,lexitr)){tokitr++;lexitr++;return 1;}
+        else if (assignstmt(tok,lex, tokitr,lexitr)){tokitr++;lexitr++;return 1;}
+        else if (inputstmt(tok,lex, tokitr,lexitr)){tokitr++;lexitr++;return 1;}
+        else if (outputstmt(tok,lex, tokitr,lexitr)){tokitr++;lexitr++;return 1;}
+        else {return 0;}
+    }
+    //No statement (null)
+    return 2;
 
 }
 // mark
@@ -157,7 +163,7 @@ bool SyntaxAnalyzer::whilestmt(vector<string>& tok, vector<string>& lex, vector<
 bool SyntaxAnalyzer::assignstmt(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr) {
     cout << "INSIDE ASSIGN" << endl;
     if (tokitr != tok.end()) {
-        if (*tokitr == "t_id" && tokenmap.contains(*lexitr)) {
+        if (*tokitr == "t_id" && symboltable.contains(*lexitr)) {
             tokitr++; lexitr++;
             if (tokitr != tok.end() && *tokitr == "s_assign") {
                 tokitr++; lexitr++;
@@ -176,7 +182,7 @@ bool SyntaxAnalyzer::inputstmt(vector<string>& tok, vector<string>& lex, vector<
             tokitr++; lexitr++;
             if (*tokitr == "s_rparen") {
                 tokitr++; lexitr++;
-                if (*tokitr == "t_id" && tokenmap.contains(*lexitr)) {
+                if (*tokitr == "t_id") {
                     tokitr++; lexitr++;
                     if (*tokitr == "s_rparen") {
                         tokitr++; lexitr++;
@@ -272,7 +278,7 @@ bool SyntaxAnalyzer::term(vector<string>& tok, vector<string>& lex, vector<strin
 //mark
 bool SyntaxAnalyzer::logicop(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr) {
     if (tokitr != tok.end()) {
-        if (*tokitr == "t_and" || *tokitr == "t_or") {
+        if (*tokitr == "and" || *tokitr == "or") {
             //Should I iterate or should it be assumed before the next call its iterated
             tokitr++;lexitr++;
             return true;
@@ -328,14 +334,14 @@ SyntaxAnalyzer::SyntaxAnalyzer(istream& infile) {
 // that caused the error.
 // If no error, vectors contain syntactically correct source code
 bool SyntaxAnalyzer::parse() {
-    if (tokitr != tok.end()) {
-        if(vdec(tok, lex, tokitr, lexitr)){
-            if (tokitr != tok.end() && *tokitr == "t_main"){
+    if (tokitr != tokens.end()) {
+        if(vdec(tokens, lexemes, tokitr, lexitr)){
+            if (tokitr != tokens.end() && *tokitr == "t_main"){
                 tokitr++; lexitr++;
-                if(tokitr != tok.end() && *tokitr == "s_lbrace"){
+                if(tokitr != tokens.end() && *tokitr == "s_lbrace"){
                         tokitr++; lexitr++;
-                        if(stmtlist(tok, lex, tokitr, lexitr)){
-                            if(tokitr != tok.end() && *tokitr == "s_rbrace"){
+                        if(stmtlist(tokens, lexemes, tokitr, lexitr)){
+                            if(tokitr != tokens.end() && *tokitr == "s_rbrace"){
                                 return true;
                         }
                     }
