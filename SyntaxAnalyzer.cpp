@@ -39,12 +39,13 @@ int SyntaxAnalyzer::vars(vector<string>& tok, vector<string>& lex, vector<string
                     }
                 }
                 if (tokitr != tok.end() && *tokitr == "s_semi") {
+                    tokitr++; lexitr++;
                     return 1;
                 }
             }
         }
     }
-    return 0;
+    return 2;
 }
 
 // erika
