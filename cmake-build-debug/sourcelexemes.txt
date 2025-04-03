@@ -1,1 +1,31 @@
-t_id : nums
+t_else : else
+t_output : output
+s_lparen : (
+t_text : NOT        EQUAL
+s_rparen : )
+t_while : while
+s_lparen : (
+t_id : x
+s_gt : >
+t_id : j
+t_and : and
+t_id : w
+s_eq : ==
+t_number : 2
+t_or : or
+t_id : q
+s_nequal : !=
+t_number : 0
+s_rparen : )
+t_output : output
+s_lparen : (
+t_text : Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune
+s_rparen : )
+t_var : var
+
+s_assign : =
+t_number : 88
+s_semi : ;
+s_rbrace : }
+
+

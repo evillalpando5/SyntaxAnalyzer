@@ -26,7 +26,7 @@ int SyntaxAnalyzer::vars(vector<string>& tok, vector<string>& lex, vector<string
     if(tokitr != tok.end()) {
         if(*tokitr == "t_string" ||*tokitr == "t_integer") {
             tokitr++; lexitr++;
-            if (tokitr != tok.end() && *tokitr == "t_id") {
+            if (tokitr != tok.end() && *tokitr == "t_id")  {
 
                 tokitr++; lexitr++;
                 while (tokitr != tok.end() && *tokitr == "s_comma") {
@@ -157,7 +157,7 @@ bool SyntaxAnalyzer::whilestmt(vector<string>& tok, vector<string>& lex, vector<
 bool SyntaxAnalyzer::assignstmt(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr) {
     cout << "INSIDE ASSIGN" << endl;
     if (tokitr != tok.end()) {
-        if (*tokitr == "t_id") {
+        if (*tokitr == "t_id" && tokenmap.contains(*lexitr)) {
             tokitr++; lexitr++;
             if (tokitr != tok.end() && *tokitr == "s_assign") {
                 tokitr++; lexitr++;
@@ -230,8 +230,30 @@ bool SyntaxAnalyzer::expr(vector<string>& tok, vector<string>& lex, vector<strin
     } else
         return false;
 
-} // evan
-bool SyntaxAnalyzer::simpleexpr(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr){}  // mark
+} 
+//mark
+bool SyntaxAnalyzer::simpleexpr(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr) {
+    if (tokitr != tok.end()) {
+        if (term(tok,lex,tokitr,lexitr)) {
+            if (arithop(tok,lex,tokitr,lexitr)) {
+                //case 1 term arith term
+                if (term(tok,lex,tokitr,lexitr)) {
+                    return true;
+                }
+            }
+            else if (relop(tok,lex,tokitr,lexitr)) {
+                //case 2 term relop term
+                if (term(tok,lex,tokitr,lexitr)) {
+                    return true;
+                }
+            }
+            //if its just a term
+            tokitr++; lexitr++;
+            return true;
+        }
+        return false;
+    }
+}  
 
 //  erika
 // TERM    number | text |  id  | (EXPR)
