@@ -49,26 +49,31 @@ int SyntaxAnalyzer::vars(vector<string>& tok, vector<string>& lex, vector<string
 
 // erika
 bool SyntaxAnalyzer::stmtlist(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr) {
-    if (tokitr != tok.end()) {
-        if (!stmt(tok, lex, tokitr, lexitr)) {
+    //This will loop until it gets returned 0,2, stmt will handle if its null
+    while (tokitr != tok.end()) {
+        int stmtResult = stmt(tok,lex,tokitr,lexitr);
+        //0 -> Stmt error (bad stmt format)
+        if (stmtResult == 0) {
+            return false;
+        }
+        //2 -> no statement
+        else if (stmtResult == 2) {
             return true;
         }
-        while (stmt(tok, lex, tokitr, lexitr)) {
-            cout << "syntax checking [stmt]" << endl;
-        }
-        return true;
+
     }
-    return false;
+    //Was able to successfully go through all statments
+    return true;
 }
 // mark
 int SyntaxAnalyzer::stmt(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr) {
     unordered_set<string> statTokens = {"t_if","t_while", "t_assign", "t_input", "t_output"};
     if (tokitr != tok.end() && statTokens.contains(*tokitr)) {
-        if (ifstmt(tok,lex, tokitr,lexitr)){tokitr++;lexitr++;return 1;}
-        else if (whilestmt(tok,lex, tokitr,lexitr)){tokitr++;lexitr++;return 1;}
-        else if (assignstmt(tok,lex, tokitr,lexitr)){tokitr++;lexitr++;return 1;}
-        else if (inputstmt(tok,lex, tokitr,lexitr)){tokitr++;lexitr++;return 1;}
-        else if (outputstmt(tok,lex, tokitr,lexitr)){tokitr++;lexitr++;return 1;}
+        if (ifstmt(tok,lex, tokitr,lexitr) || whilestmt(tok,lex, tokitr,lexitr) ||
+        assignstmt(tok,lex, tokitr,lexitr) || inputstmt(tok,lex, tokitr,lexitr) || (outputstmt(tok,lex, tokitr,lexitr))){
+            tokitr++; lexitr++;
+            return 1;
+        }
         else {return 0;}
     }
     //No statement (null)
