@@ -22,7 +22,6 @@ s_lparen : (
 t_text : Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune
 s_rparen : )
 t_var : var
-
 s_assign : =
 t_number : 88
 s_semi : ;
