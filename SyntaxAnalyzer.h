@@ -25,8 +25,7 @@ private:
     map<string, string> symboltable;
 
     // other private methods
-    bool typeCheck();
-    bool addSymbol();
+    bool addSymbol(string& value, string& lexeme);
     bool vdec(); // erika
     int vars(); // evan
     bool stmtlist(); // erika

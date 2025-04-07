@@ -7,45 +7,80 @@
 bool SyntaxAnalyzer::vdec() { // GOOD
     cout << "in vdec" << endl;
     if (tokitr != tokens.end()) {
-        // if they didnt choose to delcare variables it returns true
         if (*tokitr != "t_var") {
-            cout << "returning true from vdec" << endl;
+            // no variables declared
+            cout << "returning 2 from vdec" << endl;
             return true;
         }
-        while ( *tokitr == "t_var"){
-            cout << "in while loop" << endl;
-            tokitr++; lexitr++;
-            if (!vars()) {
-                cout << "returning false from vdec" << endl;
-                return false;
-            }
+        tokitr++;lexitr++;
+        int varsResult = vars();
+        while(varsResult == 1 && *tokitr == "t_var") {
+            tokitr++;lexitr++;
+            varsResult= vars();
+            cout << "stmt parsing while code :" << varsResult << endl;
         }
-        cout << "returning true from vdec1" << endl;
+        if (varsResult == 2 || varsResult == 1) {
+            cout <<" vars processed code: "  << varsResult << endl;
+            return true;
+        }
+        if (varsResult == 0) {
+            cout <<" error vars parsing" << endl;
+        }
+    }
+    // if (tokitr != tokens.end()) {
+    //     // if they didnt choose to delcare variables it returns true
+    //     if (*tokitr != "t_var") {
+    //         cout << "returning true from vdec" << endl;
+    //         return true;
+    //     }
+    //     while ( *tokitr == "t_var"){
+    //         cout << "in while loop" << endl;
+    //         tokitr++; lexitr++;
+    //         if (!vars()) {
+    //             cout << "returning false from vdec" << endl;
+    //             return false;
+    //         }
+    //     }
+    //     cout << "returning true from vdec1" << endl;
+    //     return true;
+    // }
+    cout << "returning false from vdec1" << endl;
+    return false;
+}
+bool SyntaxAnalyzer::addSymbol(string& value, string& lexeme) {
+    if (!symboltable.contains(lexeme)) {
+        symboltable[lexeme] = value;
         return true;
     }
-    cout << "returning false from vdec1" << endl;
+    cout << "variable has already been declared" << endl;
     return false;
 }
 // evan
 int SyntaxAnalyzer::vars() { // GOOD
-    cout << "INSIDE VARS" << endl;
+    cout << "INSIDE VARS : " << *lexitr << endl;
     if(tokitr != tokens.end()) {
-        if (*tokitr != "t_string" && *tokitr != "t_integer") {
-            cout << "returning 2 from vdec" << endl;
-            return 2;
-        }
-        cout << *tokitr << endl;
+        // if (*tokitr != "t_string" && *tokitr != "t_integer") {
+        //     cout << "returning 2 from vars" << endl;
+        //     return 2;
+        // }
         if(*tokitr == "t_string" ||*tokitr == "t_integer") {
-            string value = *lexitr;//used later for symbol table
+            cout << "valid data type " << endl;
+            string value = *lexitr; //used later for symbol table
             tokitr++; lexitr++;
             if (tokitr != tokens.end() && *tokitr == "t_id")  {
-                symboltable[*lexitr] = value; //adds to symbol table
+                if (!addSymbol(value, *lexitr)) {
+                    return false;
+                }
+                // symboltable[*lexitr] = value; //adds to symbol table
                 tokitr++;lexitr++;
                 while (tokitr != tokens.end() && *tokitr == "s_comma") {
                     cout << "in while loop found more than one id" << endl;
                     tokitr++; lexitr++;
                     if (tokitr != tokens.end() && *tokitr == "t_id") {
-                        symboltable[*lexitr] = value;
+                        if (!addSymbol(value, *lexitr)) {
+                            return false;
+                        }
+                        // symboltable[*lexitr] = value;
                         tokitr++; lexitr++;
                     } else {
                         cout << "error in declaring" << endl;
@@ -55,6 +90,7 @@ int SyntaxAnalyzer::vars() { // GOOD
                 if (tokitr != tokens.end() && *tokitr == "s_semi") {
                     tokitr++ ; lexitr++;
                     cout << "correct delcaration " << endl;
+                    cout << "returning " << *lexitr << endl;
                     return 1;
                 }
             }
@@ -82,7 +118,7 @@ bool SyntaxAnalyzer::stmtlist() { // GOOD
 }
 // mark
 int SyntaxAnalyzer::stmt() { // GOOD
-    cout << "IN STMT" << end;
+    cout << "IN STMT" << endl;
     if (tokitr != tokens.end() ){
         cout << "checking statement type : " << *lexitr << endl;
         if (*tokitr != "t_while" && *tokitr != "t_if" && *tokitr != "t_output" && *tokitr != "t_input" && *tokitr != "t_id") {
@@ -97,7 +133,6 @@ int SyntaxAnalyzer::stmt() { // GOOD
         cout << "error with a statement "<< endl;
         return 0;
     }
-
 }
 // mark
 bool SyntaxAnalyzer::ifstmt() { //GOOD

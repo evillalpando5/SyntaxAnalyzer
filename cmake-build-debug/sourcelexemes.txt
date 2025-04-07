@@ -4,6 +4,12 @@ t_id : x
 s_comma : ,
 t_id : y
 s_semi : ;
+t_var : var
+t_string : string
+t_id : x
+s_comma : ,
+t_id : r
+s_semi : ;
 t_main : main
 s_lbrace : {
 t_if : if
