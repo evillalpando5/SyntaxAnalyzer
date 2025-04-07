@@ -271,22 +271,29 @@ bool SyntaxAnalyzer::outputstmt() {
 }
 // evan
 bool SyntaxAnalyzer::expr() {
-    cout << "INSIDE EXPR" << endl;
+    cout << "INSIDE EXPR" << *lexitr << endl;
     if (tokitr != tokens.end()) {
         if (simpleexpr()) {
-            if (tokitr!= tokens.end() && logicop()) {
-                if (tokitr != tokens.end() && !simpleexpr()) {
-                    return false;
+            cout << "simple epxr found " << endl;
+            if (tokitr!= tokens.end() && !logicop()) {
+                tokitr--; lexitr--;//decrement because logicop moved it and failed
+                return true;
+            }
+            else {
+                cout << "logicop found " << endl;
+                if (tokitr != tokens.end() && simpleexpr()) {
+                    return true;
                 }
                 tokitr--; lexitr--;//decrement because logicop moved it and failed
             }
-           return true;
+           return false;
         }
     }
     return false;
 }
 //mark
 bool SyntaxAnalyzer::simpleexpr() {
+    cout << "inside simpleexpr" << endl;
     if (tokitr != tokens.end()) {
         if (term()) {
             if (arithop()) {
@@ -295,7 +302,8 @@ bool SyntaxAnalyzer::simpleexpr() {
                     return true;
                 }
             }
-            else if (relop( )) {
+            tokitr--; lexitr--;
+            if (relop( )) {
                 //case 2 term relop term
                 if (term()) {
                     return true;
@@ -316,8 +324,13 @@ bool SyntaxAnalyzer::term() {
             tokitr++; lexitr++;
             return true;
         }
-        if (expr()) {
-            return true;
+        if (*tokitr == "l_paren") {
+            *tokitr++; lexitr++;
+            if (expr()) {
+                if (*tokitr == "r_paren") {
+                    return true;
+                }
+            }
         }
     }
     return false;
