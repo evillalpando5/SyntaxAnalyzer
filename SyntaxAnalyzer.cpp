@@ -182,13 +182,17 @@ bool SyntaxAnalyzer::whilestmt() {
                 tokitr++; lexitr++;
                 if (tokitr != tokens.end()) {
                     if (expr()) {
+                        cout << "valid expr found in while loop" << endl;
                         if (tokitr != tokens.end() && *tokitr == "s_rparen") {
+                            cout << "valid rparen" << endl;
                             tokitr++; lexitr++;
                             if (tokitr != tokens.end() && *tokitr == "s_lbrace") {
+                                cout << "valid lparen" << endl;
                                 tokitr++; lexitr++;
                                 if (stmtlist()) {
                                     if (tokitr != tokens.end() && *tokitr == "s_rbrace") {
                                         tokitr++; lexitr++;
+                                        cout << "valid whilestmt found" << endl;
                                         return true;
                                     }
                                 }
@@ -199,17 +203,22 @@ bool SyntaxAnalyzer::whilestmt() {
             }
         }
     }
+    cout << "false while loop" << endl;
     return false;
 }
 // evan
 bool SyntaxAnalyzer::assignstmt() {
     cout << "INSIDE ASSIGN" << endl;
     if (tokitr != tokens.end()) {
+        cout << "going to check assign : " << *lexitr << endl;
         if (*tokitr == "t_id" && symboltable.contains(*lexitr)) {
+            cout << "valid ID" << endl;
             tokitr++; lexitr++;
             if (tokitr != tokens.end() && *tokitr == "s_assign") {
                 tokitr++; lexitr++;
+                cout << "going to check expr : " << *lexitr << endl;
                 if (tokitr != tokens.end() && expr()) {
+                    cout << "valid expr" << endl;
                     if (tokitr != tokens.end() && *tokitr == "s_semi") {
                         tokitr++;lexitr++;
                         return true;
@@ -271,7 +280,7 @@ bool SyntaxAnalyzer::outputstmt() { // GOOD
 }
 // evan
 bool SyntaxAnalyzer::expr() {
-    cout << "INSIDE EXPR" << *lexitr << endl;
+    cout << "INSIDE EXPR : " << *lexitr << endl;
     // if (tokitr != tokens.end()) {
     //     if (simpleexpr()) {
     //         cout << "simple epxr found " << endl;
@@ -288,14 +297,16 @@ bool SyntaxAnalyzer::expr() {
     //     }
     // }
     // return false;
-    cout << "INSIDE EXPR" << endl;
     if (tokitr != tokens.end()) {
         if (simpleexpr()) {
-            if (tokitr!= tokens.end() && logicop()) {
-                if (tokitr != tokens.end() && !simpleexpr()) {
-                    return false;
-                }
-                tokitr--; lexitr--;//decrement because logicop moved it and failed
+            cout << "found simpleexption" << endl;
+            if (tokitr!= tokens.end() && !logicop()) {
+                cout << "just simpleexption" << endl;
+                // tokitr--; lexitr--;//decrement because logicop moved it and failed
+                return true;
+            }
+            if (tokitr != tokens.end() && !simpleexpr()) {
+                return false;
             }
             return true;
         }
@@ -321,6 +332,7 @@ bool SyntaxAnalyzer::simpleexpr() {
                 }
             }
             //if its just a term
+            // lexitr++, tokitr++;
             return true;
         }
     }
@@ -340,7 +352,7 @@ bool SyntaxAnalyzer::term() {
             if (expr()) {
                 if (*tokitr == "r_paren") {
                     cout << "Correct term : " << *lexitr << endl;
-
+                    *tokitr++; lexitr++;
                     return true;
                 }
             }
@@ -366,6 +378,7 @@ bool SyntaxAnalyzer::arithop(){ // GOOD
     cout << "INSIDE ARITH checking " << endl;
     if (tokitr != tokens.end()) {
         if (*tokitr == "s_plus" || *tokitr == "s_minus" ||  *tokitr == "s_div") {
+            tokitr++;lexitr++;
             return true;
         }
     }
@@ -380,6 +393,7 @@ bool SyntaxAnalyzer::relop() { // GOOD
     if (tokitr != tokens.end()) {
         if ( *tokitr == "s_lt" || *tokitr == "s_gt" || *tokitr == "s_eq" || *tokitr == "s_ne" ) {
             tokitr++; lexitr++;
+            cout << "valid relational operator" << endl;
             return true;
         }
     }

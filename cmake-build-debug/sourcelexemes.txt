@@ -16,5 +16,6 @@ s_assign : =
 t_id : x
 s_plus : +
 t_number : 1
+s_semi : ;
 s_rbrace : }1
 s_rbrace : }2
