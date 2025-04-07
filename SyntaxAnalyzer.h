@@ -25,24 +25,24 @@ private:
     map<string, string> symboltable;
 
     // other private methods
-    bool typeCheck(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr);
-    bool addSymbol(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr)
-    bool vdec(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr); // erika
-    int vars(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr); // evan
-    bool stmtlist(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr); // erika
-    int stmt(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr); // mark
-    bool ifstmt(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr); // mark
-    bool elsepart(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr); // erika
-    bool whilestmt(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr); // evan
-    bool assignstmt(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr); // evan
-    bool inputstmt(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr); // erika
-    bool outputstmt(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr); // mark
-    bool expr(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr); // evan
-    bool simpleexpr(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr);  // mark
-    bool term(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr); //  erika
-    bool logicop(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr); // mark
-    bool arithop(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr); // evan
-    bool relop(vector<string>& tok, vector<string>& lex, vector<string>::iterator& tokitr, vector<string>::iterator& lexitr); // erika
+    bool typeCheck();
+    bool addSymbol();
+    bool vdec(); // erika
+    int vars(); // evan
+    bool stmtlist(); // erika
+    int stmt(); // mark
+    bool ifstmt(); // mark
+    bool elsepart(); // erika
+    bool whilestmt(); // evan
+    bool assignstmt(); // evan
+    bool inputstmt(); // erika
+    bool outputstmt(); // mark
+    bool expr(); // evan
+    bool simpleexpr();  // mark
+    bool term(); //  erika
+    bool logicop(); // mark
+    bool arithop(); // evan
+    bool relop(); // erika
 
 public:
     SyntaxAnalyzer(istream& infile);
