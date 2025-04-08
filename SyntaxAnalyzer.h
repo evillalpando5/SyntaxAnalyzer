@@ -6,7 +6,7 @@
 #include <string>
 #include <map>
 using namespace std;
-// erika mark evan
+// Erika Mark Evan
 // coding skills
    // evan - 2 , mark -3 erika - 2
 // procrastination
