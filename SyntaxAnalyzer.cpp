@@ -1,32 +1,24 @@
 #include "SyntaxAnalyzer.h"
 #include <istream>
-#include <unordered_set>
 
 // erika
-// VDEC   var  VARS  [VARS]m | Ө
 bool SyntaxAnalyzer::vdec() { // GOOD
-    cout << "in vdec" << endl;
     if (tokitr != tokens.end()) {
         if (*tokitr != "t_var") {
             // no variables declared
-            cout << "returning 2 from vdec" << endl;
             return true;
         }
         tokitr++;lexitr++;
         int varsResult = vars();
         while(varsResult == 1) {
             varsResult= vars();
-            cout << "stmt parsing while code :" << varsResult << endl;
         }
         if (varsResult == 2 || varsResult == 1) {
-            cout <<" vars processed code: "  << varsResult << endl;
             return true;
         }
         if (varsResult == 0) {
-            cout <<" error vars parsing" << endl;
         }
     }
-    cout << "returning false from vdec1" << endl;
     return false;
 }
 bool SyntaxAnalyzer::addSymbol(string& value, string& lexeme) {
@@ -34,19 +26,15 @@ bool SyntaxAnalyzer::addSymbol(string& value, string& lexeme) {
         symboltable[lexeme] = value;
         return true;
     }
-    cout << "variable has already been declared" << endl;
     return false;
 }
 // evan
 int SyntaxAnalyzer::vars() { // GOOD
-    cout << "INSIDE VARS : " << *lexitr << endl;
     if(tokitr != tokens.end()) {
         if (*tokitr != "t_string" && *tokitr != "t_integer") {
-            cout << "returning 2 from vars" << endl;
             return 2;
         }
         if(*tokitr == "t_string" ||*tokitr == "t_integer") {
-            cout << "valid data type " << endl;
             string value = *lexitr; //used later for symbol table
             tokitr++; lexitr++;
             if (tokitr != tokens.end() && *tokitr == "t_id")  {
@@ -56,7 +44,6 @@ int SyntaxAnalyzer::vars() { // GOOD
                 // symboltable[*lexitr] = value; //adds to symbol table
                 tokitr++;lexitr++;
                 while (tokitr != tokens.end() && *tokitr == "s_comma") {
-                    cout << "in while loop found more than one id" << endl;
                     tokitr++; lexitr++;
                     if (tokitr != tokens.end() && *tokitr == "t_id") {
                         if (!addSymbol(value, *lexitr)) {
@@ -65,7 +52,6 @@ int SyntaxAnalyzer::vars() { // GOOD
                         // symboltable[*lexitr] = value;
                         tokitr++; lexitr++;
                     } else {
-                        cout << "error in declaring" << endl;
                         return 0;
                     }
                 }
@@ -78,44 +64,37 @@ int SyntaxAnalyzer::vars() { // GOOD
     }
     return 0;
 }
+
 // erika
-bool SyntaxAnalyzer::stmtlist() { // GOOD
+bool SyntaxAnalyzer::stmtlist() {
     if (tokitr != tokens.end()) {
         int stmtResult = stmt();
         while(stmtResult == 1) {
             stmtResult= stmt();
-            cout << "stmt parsing while code :" << stmtResult << endl;
         }
-        if (stmtResult == 2 || stmtResult == 1) {
-            cout <<" stmt processed code: "  << stmtResult << endl;
+        if (stmtResult == 2) {
             return true;
         }
         if (stmtResult == 0) {
-            cout <<" error stmt parsing" << endl;
+            return false;
         }
     }
 }
 // mark
-int SyntaxAnalyzer::stmt() { // GOOD
-    cout << "IN STMT" << endl;
+int SyntaxAnalyzer::stmt() {
     if (tokitr != tokens.end() ){
-        cout << "checking statement type : " << *lexitr << endl;
         if (*tokitr != "t_while" && *tokitr != "t_if" && *tokitr != "t_output" && *tokitr != "t_input" && *tokitr != "t_id") {
             // no statement selected
-            cout << " no statement selected" << endl;
             return 2;
         }
         if (whilestmt() || ifstmt() || outputstmt() || inputstmt() || assignstmt()) {
-            cout << "successful statement" << endl;
             return 1;
         }
-        cout << "error with a statement "<< endl;
         return 0;
     }
 }
 // mark
-bool SyntaxAnalyzer::ifstmt() { //GOOD
-    cout << "in IF" << endl;
+bool SyntaxAnalyzer::ifstmt() {
     if (tokitr != tokens.end()) {
         if (*tokitr == "t_if") {
             tokitr++;lexitr++;
@@ -128,7 +107,6 @@ bool SyntaxAnalyzer::ifstmt() { //GOOD
                             tokitr++;lexitr++;
                             if (stmtlist()) {
                                 if (tokitr != tokens.end() && *tokitr == "s_rbrace") {
-                                    cout << "second rbrace"<< endl;
                                     tokitr++;lexitr++;
                                     elsepart();
                                     return true;
@@ -140,11 +118,10 @@ bool SyntaxAnalyzer::ifstmt() { //GOOD
             }
         }
     }
-    cout << "invalid if" << endl;
     return false;
 }
 // erika
-bool SyntaxAnalyzer::elsepart() { // GOOD
+bool SyntaxAnalyzer::elsepart() {
     if (tokitr != tokens.end()) {
         if (*tokitr != "t_else") {
             return true;
@@ -167,7 +144,6 @@ bool SyntaxAnalyzer::elsepart() { // GOOD
 
 // evan
 bool SyntaxAnalyzer::whilestmt() {
-    cout << "INSIDE WHILE" << endl;
     if (tokitr != tokens.end()) {
         if (tokitr != tokens.end() && *tokitr == "t_while") {
             tokitr++; lexitr++;
@@ -175,46 +151,33 @@ bool SyntaxAnalyzer::whilestmt() {
                 tokitr++; lexitr++;
                 if (tokitr != tokens.end()) {
                     if (expr()) {
-                        cout << "valid expr found in while loop" << endl;
                         if (tokitr != tokens.end() && *tokitr == "s_rparen") {
-                            cout << "valid rparen" << endl;
                             tokitr++; lexitr++;
                             if (tokitr != tokens.end() && *tokitr == "s_lbrace") {
-                                cout << "valid lparen" << endl;
                                 tokitr++; lexitr++;
                                 if (stmtlist()) {
                                     if (tokitr != tokens.end() && *tokitr == "s_rbrace") {
                                         tokitr++; lexitr++;
-                                        cout << "valid whilestmt found" << endl;
                                         return true;
                                     }
                                 }
-                                cout << "no more statements" << endl;
                             }
-                            cout << "no lparen" << endl;
                         }
-                        cout << "no rpaen" << endl;
                     }
                 }
             }
         }
     }
-    cout << "false while loop" << endl;
     return false;
 }
 // evan
 bool SyntaxAnalyzer::assignstmt() {
-    cout << "INSIDE ASSIGN" << endl;
     if (tokitr != tokens.end()) {
-        cout << "going to check assign : " << *lexitr << endl;
         if (*tokitr == "t_id" && symboltable.contains(*lexitr)) {
-            cout << "valid ID" << endl;
             tokitr++; lexitr++;
             if (tokitr != tokens.end() && *tokitr == "s_assign") {
                 tokitr++; lexitr++;
-                cout << "going to check expr : " << *lexitr << endl;
                 if (tokitr != tokens.end() && expr()) {
-                    cout << "valid expr" << endl;
                     if (tokitr != tokens.end() && *tokitr == "s_semi") {
                         tokitr++;lexitr++;
                         return true;
@@ -226,7 +189,7 @@ bool SyntaxAnalyzer::assignstmt() {
     return false;
 }
 //erika
-bool SyntaxAnalyzer::inputstmt() { // GOOD
+bool SyntaxAnalyzer::inputstmt() {
     if (tokitr != tokens.end()) {
         if (*tokitr == "t_input") {
             tokitr++; lexitr++;
@@ -245,14 +208,13 @@ bool SyntaxAnalyzer::inputstmt() { // GOOD
     return false;
 }
 // mark
-bool SyntaxAnalyzer::outputstmt() { // GOOD
+bool SyntaxAnalyzer::outputstmt() {
     if (tokitr != tokens.end()) {
         if (*tokitr == "t_output") {
             tokitr++;lexitr++;
             if (tokitr != tokens.end() && *tokitr == "s_lparen") {
                 tokitr++;lexitr++;
                 if (tokitr != tokens.end()) {
-                    //check both cases (EXPR) or (text)
                     if (*tokitr == "t_text") {
                         tokitr++;lexitr++;
                         if (tokitr != tokens.end() && *tokitr == "s_rparen") {
@@ -261,7 +223,6 @@ bool SyntaxAnalyzer::outputstmt() { // GOOD
                             }
                         }
                     else if (expr()){
-                        cout << "in output expr" << endl;
                         if (tokitr != tokens.end() && *tokitr == "s_rparen") {
                             tokitr++;lexitr++;
                             return true;
@@ -275,13 +236,9 @@ bool SyntaxAnalyzer::outputstmt() { // GOOD
 }
 // evan
 bool SyntaxAnalyzer::expr() {
-    cout << "INSIDE EXPR : " << *lexitr << endl;
     if (tokitr != tokens.end()) {
         if (simpleexpr()) {
-            cout << "found simpleexption" << endl;
             if (tokitr!= tokens.end() && !logicop()) {
-                cout << "just simpleexption" << endl;
-                // tokitr--; lexitr--;//decrement because logicop moved it and failed
                 return true;
             }
             if (tokitr != tokens.end() && !simpleexpr()) {
@@ -295,10 +252,8 @@ bool SyntaxAnalyzer::expr() {
 
 //mark
 bool SyntaxAnalyzer::simpleexpr() {
-    cout << "inside simpleexpr" << endl;
     if (tokitr != tokens.end()) {
         if (term()) {
-            cout << "valid term " << endl;
             if (arithop()) {
                 //case 1 term arith term
                 if (term()) {
@@ -312,7 +267,6 @@ bool SyntaxAnalyzer::simpleexpr() {
                 }
             }
             //if its just a term
-            // lexitr++, tokitr++;
             return true;
         }
     }
@@ -320,7 +274,6 @@ bool SyntaxAnalyzer::simpleexpr() {
 }
 
 //  erika
-// TERM    number | text |  id  | (EXPR)
 bool SyntaxAnalyzer::term() {
     if (tokitr != tokens.end()) {
         if ( (*tokitr == "t_id" && symboltable.contains(*lexitr)) || *tokitr == "t_number" || *tokitr == "t_text" ) {
@@ -328,64 +281,50 @@ bool SyntaxAnalyzer::term() {
             return true;
         }
         if (*tokitr == "s_lparen") {
-            cout << "found l_parne" << endl;
             *tokitr++; lexitr++;
             if (expr()) {
                 if (*tokitr == "s_rparen") {
-                    cout << "Correct term : " << *lexitr << endl;
                     *tokitr++; lexitr++;
                     return true;
                 }
             }
         }
     }
-    cout << "Incorrect term : " << *lexitr << endl;
     return false;
 }
 //mark
-bool SyntaxAnalyzer::logicop() { // GOOD
+bool SyntaxAnalyzer::logicop() {
     if (tokitr != tokens.end()) {
         if (*tokitr == "s_and" || *tokitr == "s_or") {
             tokitr++;lexitr++;
             return true;
         }
     }
-    cout << "Incorrect logic operator : " << *lexitr << endl;
     return false;
 }
 
 // evan
-bool SyntaxAnalyzer::arithop(){ // GOOD
-    cout << "INSIDE ARITH checking " << endl;
+bool SyntaxAnalyzer::arithop(){
     if (tokitr != tokens.end()) {
         if (*tokitr == "s_plus" || *tokitr == "s_minus" ||  *tokitr == "s_div") {
             tokitr++;lexitr++;
             return true;
         }
     }
-    cout << "Incorrect arithmetic operator : " << *lexitr << endl;
     return false;
 }
 
 // erika
-// relop will check if the current token is a relational operator and moves the tokitr along adn returns true if it is
-// otherwise it returns false
-bool SyntaxAnalyzer::relop() { // GOOD
+bool SyntaxAnalyzer::relop() {
     if (tokitr != tokens.end()) {
         if ( *tokitr == "s_lt" || *tokitr == "s_gt" || *tokitr == "s_eq" || *tokitr == "s_ne" ) {
             tokitr++; lexitr++;
-            cout << "valid relational operator" << endl;
             return true;
         }
     }
-    cout << "Incorrect relational operator : " << *lexitr << endl;
     return false;
 }
 
-
-// pre: 1st parameter consists of an open file containing a source code's
-//	valid scanner/lexical analyzer output.  This data must be in the form: token : lexeme
-// post: the vectors have been populated
 SyntaxAnalyzer::SyntaxAnalyzer(istream& infile) {
     string line;
     getline(infile, line);
@@ -396,8 +335,6 @@ SyntaxAnalyzer::SyntaxAnalyzer(istream& infile) {
         lexemes.push_back(line.substr(pos+3, line.length()));
         getline(infile, line);
     }
-    cout << "population successful";
-
 }
 
 // pre: none
@@ -416,7 +353,7 @@ bool SyntaxAnalyzer::parse() {
                     tokitr++; lexitr++;
                     if(stmtlist()){
                         if(tokitr != tokens.end() && *tokitr == "s_rbrace"){
-                            cout << "Success" << endl;
+                            // cout << "Success" << endl;
                             return true;
                         }
                     }
@@ -424,7 +361,7 @@ bool SyntaxAnalyzer::parse() {
             }
         }
     }
-    if (tokitr == tokens.end() ){
+    if (tokitr == tokens.end()){
         tokitr--; lexitr--;
     }
     cout << "Error reading file at: " << *lexitr << endl;
