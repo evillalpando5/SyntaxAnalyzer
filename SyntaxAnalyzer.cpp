@@ -14,8 +14,7 @@ bool SyntaxAnalyzer::vdec() { // GOOD
         }
         tokitr++;lexitr++;
         int varsResult = vars();
-        while(varsResult == 1 && *tokitr == "t_var") {
-            tokitr++;lexitr++;
+        while(varsResult == 1) {
             varsResult= vars();
             cout << "stmt parsing while code :" << varsResult << endl;
         }
@@ -27,23 +26,6 @@ bool SyntaxAnalyzer::vdec() { // GOOD
             cout <<" error vars parsing" << endl;
         }
     }
-    // if (tokitr != tokens.end()) {
-    //     // if they didnt choose to delcare variables it returns true
-    //     if (*tokitr != "t_var") {
-    //         cout << "returning true from vdec" << endl;
-    //         return true;
-    //     }
-    //     while ( *tokitr == "t_var"){
-    //         cout << "in while loop" << endl;
-    //         tokitr++; lexitr++;
-    //         if (!vars()) {
-    //             cout << "returning false from vdec" << endl;
-    //             return false;
-    //         }
-    //     }
-    //     cout << "returning true from vdec1" << endl;
-    //     return true;
-    // }
     cout << "returning false from vdec1" << endl;
     return false;
 }
@@ -59,10 +41,10 @@ bool SyntaxAnalyzer::addSymbol(string& value, string& lexeme) {
 int SyntaxAnalyzer::vars() { // GOOD
     cout << "INSIDE VARS : " << *lexitr << endl;
     if(tokitr != tokens.end()) {
-        // if (*tokitr != "t_string" && *tokitr != "t_integer") {
-        //     cout << "returning 2 from vars" << endl;
-        //     return 2;
-        // }
+        if (*tokitr != "t_string" && *tokitr != "t_integer") {
+            cout << "returning 2 from vars" << endl;
+            return 2;
+        }
         if(*tokitr == "t_string" ||*tokitr == "t_integer") {
             cout << "valid data type " << endl;
             string value = *lexitr; //used later for symbol table
@@ -89,14 +71,11 @@ int SyntaxAnalyzer::vars() { // GOOD
                 }
                 if (tokitr != tokens.end() && *tokitr == "s_semi") {
                     tokitr++ ; lexitr++;
-                    cout << "correct delcaration " << endl;
-                    cout << "returning " << *lexitr << endl;
                     return 1;
                 }
             }
         }
     }
-    cout << "idk what error" << endl;
     return 0;
 }
 // erika

@@ -23,7 +23,6 @@ private:
     // map of variables and their datatype
     // i.e. sum t_integer
     map<string, string> symboltable;
-
     // other private methods
     bool addSymbol(string& value, string& lexeme);
     bool vdec(); // erika
